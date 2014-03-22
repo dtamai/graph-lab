@@ -9,7 +9,9 @@ class Graph
     @edges = Array.new
   end
 
-  def write_csv(nodes_file="nodes.csv", edges_file="edges.csv")
+  DATA_DIR="data"
+  def write_csv(nodes_file=File.join(DATA_DIR, "nodes.csv"),
+                edges_file=File.join(DATA_DIR, "edges.csv"))
     File.open(nodes_file, 'w') do |f|
       f << Node.csv_header
       f << "\n"
