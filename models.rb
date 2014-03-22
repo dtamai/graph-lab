@@ -1,6 +1,7 @@
 require_relative 'models/node'
 require_relative 'models/edge'
 require_relative 'models/graph'
+require_relative 'models/model'
 require_relative 'models/barabasi_albert'
 
 g = Graph.new(1, "BA")
