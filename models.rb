@@ -17,6 +17,4 @@ end
 
 WattsStrogatz.new(g, k, ϐ).apply
 
-puts g.nodes.to_s
-puts g.edges.to_s
 g.write_csv
