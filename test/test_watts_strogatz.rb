@@ -19,7 +19,7 @@ describe WattsStrogatz do
 
     it "creates edges" do
       WattsStrogatz.apply(@graph, 4, 0.2)
-      assert @graph.edges.size > 0
+      assert @graph.edge_count > 0
     end
   end
 end

@@ -4,14 +4,13 @@ class Graph
   class IdError < IndexError; end
 
   attr_reader :id, :label
-  attr_accessor :edges
 
   def initialize(id, label="")
     @id = id
     @label = label
     @nodes = Set.new
     @nodes_order = Array.new
-    @edges = Array.new
+    @edges = Set.new
   end
 
   def add_node(node)
@@ -36,6 +35,26 @@ class Graph
 
   def nodes
     @nodes.to_enum
+  end
+
+  def edges
+    @edges.to_enum
+  end
+
+  def add_edge(edge)
+    if @nodes_order.include?(edge.source) && @nodes_order.include?(edge.target)
+      @edges << edge
+    else
+      raise IdError, "unknown node id=#{id}"
+    end
+  end
+
+  def edge_count
+    @edges.size
+  end
+
+  def clear_edges
+    @edges = Set.new
   end
 
   DATA_DIR="data"

@@ -12,8 +12,7 @@ class WattsStrogatz < Model
   private
 
   def prepare
-    @edges.clear
-    @edge_count = 0
+    @graph.clear_edges
   end
 
   def run
@@ -61,8 +60,7 @@ class WattsStrogatz < Model
   end
 
   def add_edge(pair)
-    @edges << Edge.new(@edge_count, source=pair[0].id, target=pair[1].id)
-    @edge_count += 1
+    @graph.add_edge(Edge.new(@graph.edge_count, pair[0].id, pair[1].id))
   end
 
   def rewire_nodes
@@ -72,7 +70,7 @@ class WattsStrogatz < Model
       source_id = @graph.get_node_by_index(i)
 
       # Save all target nodes before rewiring, otherwise this may not converge
-      targets_ids = @edges.select { |e| e.source == source_id }.map(&:target)
+      targets_ids = @graph.edges.select { |e| e.source == source_id }.map(&:target)
       targets_ids.each do |target_id|
         new_target_id = draw_new_target(source_id)
         draw_rewire(source_id, target_id, new_target_id, @ϐ)
@@ -82,8 +80,8 @@ class WattsStrogatz < Model
 
   def draw_new_target(id)
     # Targets will change when rewiring, so a new check is required
-    unavailable = @edges.select { |e| e.source == id }.map(&:target)
-    unavailable.concat @edges.select { |e| e.target == id }.map(&:source)
+    unavailable = @graph.edges.select { |e| e.source == id }.map(&:target)
+    unavailable.concat @graph.edges.select { |e| e.target == id }.map(&:source)
     unavailable.concat [id]
     new_target_id = @nodes[Random.rand(@nodes.size)].id
 
@@ -96,7 +94,7 @@ class WattsStrogatz < Model
 
   def draw_rewire(i, j, k, prob)
     if Random.rand < prob
-      edge = @edges.select { |e| e.source == i && e.target == j }.pop
+      edge = @graph.edges.select { |e| e.source == i && e.target == j }.pop
       edge.target = k
     end
   end
