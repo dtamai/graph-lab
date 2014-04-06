@@ -30,7 +30,7 @@ class WattsStrogatz < Model
   end
 
   def validate(k, ϐ)
-    n = @nodes.size
+    n = @graph.node_count
     ln_N = Math.log(n)
 
     invalids = []
@@ -45,16 +45,16 @@ class WattsStrogatz < Model
   def create_ring(distance)
     return if distance == 0
 
-    size = @nodes.size
+    size = @graph.node_count
     low_arc_indexes = 0..(size - distance - 1)
     high_arc_indexes = (low_arc_indexes.max + 1)..(size - 1)
 
     low_arc_indexes.each do |i|
-      add_edge([@nodes[i], @nodes[i + distance]])
+      add_edge([@graph.get_node_by_index(i), @graph.get_node_by_index(i + distance)])
     end
 
     high_arc_indexes.each do |i|
-      add_edge([@nodes[i], @nodes[distance - size + i]])
+      add_edge([@graph.get_node_by_index(i), @graph.get_node_by_index(distance - size + i)])
     end
 
     create_ring(distance - 1)
@@ -66,10 +66,10 @@ class WattsStrogatz < Model
   end
 
   def rewire_nodes
-    size = @nodes.size
+    size = @graph.node_count
 
     0.upto(size - 1) do |i|
-      source_id = @nodes[i].id
+      source_id = @graph.get_node_by_index(i)
 
       # Save all target nodes before rewiring, otherwise this may not converge
       targets_ids = @edges.select { |e| e.source == source_id }.map(&:target)

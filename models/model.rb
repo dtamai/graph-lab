@@ -6,6 +6,7 @@ class Model
 
   def initialize(graph)
     puts "Applying #{self.class.name} model to graph"
+    @graph = graph
     @nodes = graph.nodes
     @edges = graph.edges
   end
