@@ -19,43 +19,41 @@ class BarabasiAlbert < Model
   end
 
   def clear_edges
-    @edges.clear
-    @edge_count = 0
+    @graph.clear_edges
   end
 
   def init_random_graph
-    seed, remaining = sample_split(@nodes)
+    seed, remaining = sample_split(@graph.nodes.to_a)
     seed.combination(2) { |c| draw_link(c, INIT_PROB) }
     unless has_enough_edges
       clear_edges
       return init_random_graph
     end
-    puts "    - seed: nodes=#{seed.size} edges=#{@edge_count}"
+    puts "    - seed: nodes=#{seed.size} edges=#{@graph.edge_count}"
     [seed, remaining]
   end
 
   def sample_split(nodes)
     size = [nodes.size * 0.2, 3].max
-    s = nodes.sample(size)
+    s = nodes.to_a.sample(size)
     [s, nodes - s]
   end
 
   def draw_link(pair, prob)
     if Random.rand < prob
-      @edges << Edge.new(@edge_count, source=pair[0].id, target=pair[1].id)
-      @edge_count += 1
+      @graph.add_edge(Edge.new(@graph.edge_count, pair[0].id, pair[1].id))
     end
   end
 
   def has_enough_edges
-    has = @edge_count >= 3
+    has = @graph.edge_count >= 3
     has ? (puts "ok") : (print ".")
 
     has
   end
 
   def weight(node)
-    @edges.select do |e|
+    @graph.edges.select do |e|
       e.source == node.id || e.target == node.id
     end.size
   end
@@ -63,13 +61,13 @@ class BarabasiAlbert < Model
   def add_nodes(seed, remaining)
     while rem = remaining.pop
       seed.each do |n|
-        draw_link([rem, n], weight(n).to_f/@edge_count)
+        draw_link([rem, n], weight(n).to_f/@graph.edge_count)
       end
       seed << rem
       print "."
     end
     puts "ok"
-    puts "    - graph: nodes=#{seed.size} edges=#{@edge_count}"
+    puts "    - graph: nodes=#{seed.size} edges=#{@graph.edge_count}"
   end
 end
 
