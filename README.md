@@ -3,7 +3,7 @@ graph-lab
 
 ## Models
 
-To create a graph using the Barabási-Albert model:
+To create a graph using the [Barabási-Albert](https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model) model:
 
 ```ruby
 g = Graph.new(1, "BA")
@@ -12,7 +12,7 @@ g = Graph.new(1, "BA")
   g.nodes << Node.new(n)
 end
 
-BarabasiAlbert.new(g).apply
+BarabasiAlbert.apply(g)
 ```
 
 And to dump the graph to csv file that can be imported into Gephi:
@@ -33,7 +33,7 @@ end
 k = 4
 ϐ = 0.2
 
-BarabasiAlbert.new(g, k, ϐ).apply
+WattsStrogatz.apply(g, k, ϐ)
 ```
 where k is the mean degree and ϐ is a parameter that indicates the randomness of the graph.
 

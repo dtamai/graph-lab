@@ -15,6 +15,6 @@ k = 4
   g.nodes << Node.new(n)
 end
 
-WattsStrogatz.new(g, k, ϐ).apply
+WattsStrogatz.apply(g, k, ϐ)
 
 g.write_csv

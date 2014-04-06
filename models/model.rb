@@ -1,4 +1,9 @@
 class Model
+
+  def self.apply(*args)
+    self.new(*args).apply
+  end
+
   def initialize(graph)
     puts "Applying #{self.class.name} model to graph"
     @nodes = graph.nodes
