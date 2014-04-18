@@ -52,7 +52,6 @@ cubic_interp <- function(x, z, border) {
   
   interpolated <- numeric()
   interp.mid <- numeric()
-  interp.end <- numeric()
   
   range <- (x[points[1,1]:points[1,2]])
   xs <- normalize.range(range)
