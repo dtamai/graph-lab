@@ -91,8 +91,10 @@ perlin_noise <- function(x,
   # persistence - parameter that controls the contribution for higher octaves
   # noctaves - number of octaves that will compose the noise
   # initial_octave - allows skip the first octaves
-  # rand_func - function to generate random values in the domain, the number 
-  #             of points to be generated is passed as parameter
+  # rand_func - function to generate random values in the domain, the function
+  #             receives the values in the domain that will base the random
+  #             seed, it allows some control over the distribuition of the
+  #             noise in the domain
   # border_func - function to generate the values before the first and after
   #               the last random points in the domain, it controls the
   #               steepness in the borders, the function must return only two
@@ -104,7 +106,8 @@ perlin_noise <- function(x,
     freq <- max(2^i, 2)
     ampl <- persistence^i
     z <- rep(NA, length(x))
-    z[seq(1, length(x), length.out=freq)] <- rand_func(freq)
+    z.idx <- seq(1, length(x), length.out=freq)
+    z[z.idx] <- rand_func(x[z.idx])
     border <- border_func(z[1], z[length(z)])
     cubic_interp(x, z, border)*ampl
   }
@@ -114,10 +117,20 @@ perlin_noise <- function(x,
 
 # Sample, source the file and it will show a picture
 n <- 1000
-x <- seq(0, 100, length.out=n)
+len <- 100
+x <- seq(0, len, length.out=n)
 noise <- perlin_noise(x, 0.6, 5,
                       initial_octave=3,
-                      rand_func=function(n) runif(n, 0, 1),
+                      rand_func=function(x) {
+                        # high values in the left, a flat region in middle
+                        # and lower flat region in the right
+                        n.low <- length(x[x < 20])
+                        n.mid <- length(x[x > 20 & x < 70])
+                        n.high <- length(x) - n.low - n.mid
+                        c(runif(n.low, 1.5, 3.5),
+                          runif(n.mid, 1.3, 1.6),
+                          runif(n.high, 0, 0.4))
+                      },
                       border_func=function(p0, p1) c(p0/2, p1/2)
                       )
 data <- data.frame(x, noise)
