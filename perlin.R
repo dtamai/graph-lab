@@ -43,8 +43,8 @@ cubic_interp <- function(x, z, border) {
   
   v.idx <- which(!is.na(z))
   
-  if (length(v.idx) < 1) {
-    stop("z must have at least one non-NA value")
+  if (length(v.idx) < 2) {
+    stop("z must have at least two non-NA values")
   }
   
   points <- create.pairs(v.idx)
